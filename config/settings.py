@@ -1,3 +1,7 @@
+
+from dotenv import load_dotenv
+import os
+
 """
 Django settings for config project.
 
@@ -16,15 +20,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6-eqv*lcq3re#cu)t+w8-fc#!!5szzzy3atnwzzg7oy&9ia*@f'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -42,10 +37,17 @@ INSTALLED_APPS = [
     'users',
     'issues',
     'agencies',
+    
+    # third party 
+    'rest_framework',
+    'corsheaders',
 
 ]
+# Custom User Model
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
+     'corsheaders.middleware.CorsMiddleware', # for frontend
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -116,8 +118,20 @@ USE_I18N = True
 
 USE_TZ = True
 
+CORS_ALLOW_ALL_ORIGINS = True  # to be changed in production
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = 'static/'
+
+
+#Loading the secret key to be change in production
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG") == "True"
+
+
+SUPERUSER_USERNAME=os.getenv("SUPERUSER_USERNAME")
+SUPERUSER_EMAIL=os.getenv("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD=os.getenv("SUPERUSER_PASSWORD")
