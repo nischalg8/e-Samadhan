@@ -5,11 +5,6 @@ __pycache__/
 
 
 # Frontend
-frontend/my-app/node_modules/
-frontend/my-app/build/
-frontend/my-app/dist/
-frontend/my-app/.env.local
-frontend/my-app/.env.*.local
-frontend/my-app/npm-debug.log*
-frontend/my-app/yarn-debug.log*
-frontend/my-app/yarn-error.log*
+frontend/node_modules/
+frontend/build/
+frontend/dist/
