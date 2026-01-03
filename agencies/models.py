@@ -1,9 +1,16 @@
+
 from django.db import models
-from users.models import User
 
 class Agency(models.Model):
-    name = models.CharField(max_length=100)  # KUKL, NEA, Municipality
-    users = models.ManyToManyField(User, related_name='agencies', blank=True)   # which gov_admins belong to this agency
+    AGENCY_TYPES = (
+        ('KUKL', 'KUKL'),
+        ('NEA', 'NEA'),
+        ('MUNICIPALITY', 'Municipality'),
+        
+    )
+
+    name = models.CharField(max_length=100)
+    agency_type = models.CharField(max_length=30, choices=AGENCY_TYPES)
 
     def __str__(self):
         return self.name

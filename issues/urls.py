@@ -1,23 +1,9 @@
 from django.urls import path
-from .views import (
-    CreateIssueView,
-    MyIssuesView,
-    MyIssueDetailView,
-    AssignedIssuesView,
-    UpdateIssueStatusView,
-)
+from .views import CitizenIssueCreateView, AgencyIssueListView, AgencyIssueUpdateView,CitizenIssueListView
 
 urlpatterns = [
-    # ------------------------
-    # Citizen APIs
-    # ------------------------
-    path('create/', CreateIssueView.as_view(), name='create_issue'),
-    path('my/', MyIssuesView.as_view(), name='my_issues'),
-    path('<int:pk>/', MyIssueDetailView.as_view(), name='my_issue_detail'),
-
-    # ------------------------
-    # Government APIs
-    # ------------------------
-    path('assigned/', AssignedIssuesView.as_view(), name='assigned_issues'),
-    path('<int:pk>/status/', UpdateIssueStatusView.as_view(), name='update_issue_status'),
+    path('', CitizenIssueCreateView.as_view(), name='citizen-issue-create'),  # POST /api/issues/
+    path('agency/list/', AgencyIssueListView.as_view(), name='agency-issue-list'),
+    path('list/', CitizenIssueListView.as_view(), name='citizen-issue-list'),
+    path('agency/<int:issue_id>/update/', AgencyIssueUpdateView.as_view(), name='agency-issue-update'),
 ]
