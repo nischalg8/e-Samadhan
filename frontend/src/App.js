@@ -368,6 +368,11 @@ function App() {
               center={[userData.currentLocation.lat, userData.currentLocation.lng]}
               zoom={15}
               className="terrain-map"
+              onClick={(e) => {
+                if (showForm) {
+                  handleMapClick(e);
+                }
+              }}
             >
               <TileLayer
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
@@ -376,12 +381,11 @@ function App() {
               <Marker position={[userData.currentLocation.lat, userData.currentLocation.lng]}>
                 <Popup>{t.yourLocation}</Popup>
               </Marker>
-              {!showForm && (
+              {showForm && (
                 <Marker 
                   position={[formData.latitude, formData.longitude]}
-                  eventHandlers={{ click: handleMapClick }}
                 >
-                  <Popup>{t.clickMapMsg}</Popup>
+                  <Popup>{formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}</Popup>
                 </Marker>
               )}
             </MapContainer>
