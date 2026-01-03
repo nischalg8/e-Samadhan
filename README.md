@@ -1,18 +1,18 @@
 # e-Samadhan
 
+---
+
 ## Overview
 
-**e-Samadhan** is an e-governance platform that enables citizens to report local civic issues (water leakage, electricity outage, road damage, waste problems) by selecting a location, priority, photo, and description. An AI-assisted routing system automatically identifies the responsible government entity (e.g., KUKL, NEA, Municipality) and forwards the issue to the correct dashboard for action.
-
-The platform improves service delivery, transparency, and accountability.
+e-Samadhan is an e-governance platform that enables citizens to report local civic issues (water leakage, electricity outage, road damage, waste problems) by selecting a location, priority, photo, and description. The system assigns the issue to the correct government authority based on the issue category (KUKL, NEA, Municipality). The platform improves service delivery, transparency, and accountability.
 
 ---
 
 ## Problem Statement
 
-* Many citizens, especially younger ones, are not aware of which government entity they should direct their concerns or responses to.
-* Complaints are delayed and not addressed on time
-* There is limited transparency and accountability in issue resolution
+- Citizens are often unsure which government entity handles specific issues
+- Complaints are delayed or go unresolved
+- Transparency and accountability in issue resolution are limited
 
 ---
 
@@ -20,60 +20,48 @@ The platform improves service delivery, transparency, and accountability.
 
 e-Samadhan provides:
 
-* A **citizen-facing app** to report issues with location and evidence
-* An **AI-assisted routing engine** to identify the correct authority
-* **Government dashboards** for entities like KUKL and NEA
-* A **points-based accountability system** for both citizens and authorities
+- A citizen-facing app to report issues with location, description, and photo
+- Category-based automatic routing to the correct authority
+- Government dashboards for KUKL, NEA, and Municipality
+- A points-based system for citizens and authorities based on issue resolution
 
 ---
-
-
 
 ## Key Features
 
 ### Citizen Side
 
-* Login (simulated Citizen ID for MVP)
-* Select location via map (GPS or pin)
-* Choose issue type and priority
-* Upload photo and description
-* Track issue status (Submitted → In Progress → Resolved)
-* Earn points for valid and correctly prioritized reports
+- Login using Citizen ID
+- Select issue location on a map (OpenStreetMap)
+- Choose issue type (water, electricity, road, waste) and priority
+- Upload photo and description
+- Track issue status (Submitted → In Progress → Resolved)
+- Earn points when issues are resolved
 
-### AI-Assisted Features
+### Government Dashboard
 
-* Issue classification (water, electricity, road, waste)
-* Automatic authority mapping (KUKL, NEA, Municipality)
-* Priority validation based on description
-* Duplicate issue detection (location + time + similarity)
-* Human-in-the-loop: final authority decision remains manual
-
-### Government Entity Dashboard
-
-* Role-based login (KUKL, NEA, Municipality)
-* View assigned issues
-* Map-based visualization
-* Update issue status
-* Earn points for timely resolution
+- Role-based login (KUKL, NEA, Municipality)
+- View assigned issues
+- Update issue status
+- Earn points for resolved issues
+- Map-based visualization of issues
 
 ---
-
 
 ## Architecture
 
 ```
 Citizen Web App
-   ↓ (Issue Data: location, text, image)
+      ↓
+(Issue Data: location, category, description, photo)
+      ↓
 Django REST API
-   ↓
-Rule-Based Router
-   ↓ (low confidence cases)
-Gemini Flash (LLM)
-   ↓
+      ↓
+Issue Assignment (Category-Based)
+      ↓
 Issue Management Service
-   ↓
-Government Dashboards
-(KUKL / NEA / Municipality)
+      ↓
+Government Dashboards (KUKL / NEA / Municipality)
 ```
 
 ---
@@ -81,40 +69,80 @@ Government Dashboards
 ## Tech Stack
 
 ### Frontend
+- React.js
+- OpenStreetMap for maps
 
-* React.js 
-* Mapbox or Google Maps API
-
-### Backend (Recommended)
-
-* **Django + Django REST Framework**
-* Simple, stable, and fast to build
+### Backend
+- Django + Django REST Framework
 
 ### Database
-
-* **SQLite**
-
-  * Zero setup
-  * Easy deployment
-
-### AI / NLP
-
-* Gemini Flash (free tier)
-* Keyword rules + LLM fallback
+- SQLite
 
 ### Authentication
-
-* Simulated Citizen ID login
-* Role-based access for government admins
+- Citizen ID login (simulated)
+- Role-based access for government admins
 
 ---
 
 ## Security & Privacy
 
-* Minimal personal data collection
-* No public exposure of citizen identity
-* Role-based access control
-* All AI processing logged (mock audit trail)
-* Privacy-by-design principles
+- Minimal personal data collection
+- No public exposure of citizen identity
+- Role-based access control
+- All issue assignment and resolution logged
+- Privacy-by-design principles
 
 ---
+
+## Getting Started / How to Run
+
+### Clone the repository
+
+```bash
+git clone <repository-url>
+cd e-samadhan
+```
+
+### Backend Setup
+
+Install Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run Django server:
+
+```bash
+python manage.py runserver
+```
+
+The backend will run on: **http://localhost:8000**
+
+### Frontend Setup
+
+Navigate to the frontend folder:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start React app:
+
+```bash
+npm start
+```
+
+The frontend will run on: **http://localhost:3000**
+
+### Access the App
+
+Open your browser and go to: **http://localhost:3000**
+
+Login as a citizen or government admin and start reporting/viewing issues.
