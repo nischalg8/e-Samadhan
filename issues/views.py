@@ -13,22 +13,57 @@ from rest_framework.decorators import api_view
 # ------------------------
 
 class CreateIssueView(APIView):
-    permission_classes = [IsAuthenticated, IsCitizen]
+    # CHANGED: allow unauthenticated submissions for now by accepting a
+    # `reporter_citizen_id` in the payload. If the request is authenticated
+    # we still enforce the citizen role. This makes it easy for the React
+    # frontend to submit issues without a full auth/token flow while the
+    # user model and auth are being finalized.
+    permission_classes = []
 
     def post(self, request):
         data = request.data.copy()
-        data['reporter'] = request.user.id
+
+        # Determine reporter: prefer authenticated user if present
+        reporter = None
+        if request.user and request.user.is_authenticated:
+            # enforce role
+            if getattr(request.user, 'role', None) != 'citizen':
+                return Response({'error': 'Only citizens can create issues'}, status=status.HTTP_403_FORBIDDEN)
+            reporter = request.user
+        else:
+            # allow reporter_citizen_id to identify/create a reporter user
+            citizen_id = data.get('reporter_citizen_id') or data.get('citizen_id')
+            if not citizen_id:
+                return Response({'error': 'reporter_citizen_id is required for anonymous submissions'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Create or get a lightweight citizen user record
+            from users.models import User as AppUser
+            user, created = AppUser.objects.get_or_create(
+                citizen_id=citizen_id,
+                defaults={
+                    'username': f'citizen_{citizen_id}',
+                    'role': 'citizen',
+                }
+            )
+            reporter = user
+
+        # Remove helper field so serializer doesn't choke
+        if 'reporter_citizen_id' in data:
+            data.pop('reporter_citizen_id')
+
         serializer = IssueSerializer(data=data)
         if serializer.is_valid():
-            issue = serializer.save()
-            
+            # Pass the reporter explicitly to serializer.save() so the
+            # ModelSerializer does not rely on client-supplied reporter id.
+            issue = serializer.save(reporter=reporter)
+
             # TODO: AI routing function to assign assigned_agency
-            issue = serializer.save()
-            #AI routing
-            #assigned_admin = run_gemini_routing(issue)
-            #issue.assigned_to = assigned_admin
-            #issue.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # assigned_admin = run_gemini_routing(issue)
+            # issue.assigned_to = assigned_admin
+            # issue.save()
+
+            return Response(IssueSerializer(issue).data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MyIssuesView(ListAPIView):
