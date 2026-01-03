@@ -6,7 +6,7 @@ class Agency(models.Model):
         ('KUKL', 'KUKL'),
         ('NEA', 'NEA'),
         ('MUNICIPALITY', 'Municipality'),
-        
+        ('Road Department', 'RoadDept')
     )
 
     name = models.CharField(max_length=100)

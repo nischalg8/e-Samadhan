@@ -89,8 +89,8 @@ export default function MyIssues() {
       <div className="issues-container">
         <div className="no-issues">
           <h3>{t.general.noIssues}</h3>
-          <p>You haven't reported any issues yet.</p>
-          <p>Go to the "Raise" tab to report an issue.</p>
+         
+       
         </div>
       </div>
     );

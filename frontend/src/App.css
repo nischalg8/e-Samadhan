@@ -88,7 +88,7 @@ html, body, #root {
 .login-card button {
   width: 100%;
   padding: 12px;
-  background: #DC143C; /* Crimson */
+  background: linear-gradient(135deg, #f0eeec 0%, #eeedeb 100%);
   color: white;
   border: none;
   border-radius: 5px;
@@ -105,36 +105,62 @@ html, body, #root {
   margin-bottom: 20px; /* Space before form fields */
 }
 
+/* Mode toggle buttons */
+
+/* -------------------- MODE TOGGLE BUTTONS -------------------- */
 .mode-btn {
-  flex: 1; /* Makes buttons equal width */
+  flex: 1; 
   padding: 10px 16px;
-  border: 2px solid #ddd;
-  background: white;
-  color: #666;
+  border: 2px solid #DC143C;       /* Crimson border for unselected */
+  background: white;                /* White background - unselected */
+  color: #DC143C;                   /* Crimson text - unselected */
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  transition: all 0.3s;
-} 
-
-.mode-btn:hover { 
-  border-color: #c5cbe6;
-  color: #b4bbda;
+  transition: all 0.3s ease-in-out;
+  transform: scale(1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.mode-btn.active.citizen {
-  background: linear-gradient(135deg, #f8f7f5 0%, #eeedeb 100%);
-    color: rgb(19, 14, 14);
-  border-color: #667eea;
+.mode-btn:hover:not(.active) { 
+  border-color: #B22222;            /* Darker border on hover */
+  color: #B22222;                   /* Darker text on hover */
+  transform: scale(1.03);
+  box-shadow: 0 3px 6px rgba(220, 20, 60, 0.15);
 }
 
+/* Active toggle button */
+.mode-btn.active.citizen,
 .mode-btn.active.agency {
-  background: linear-gradient(135deg, #f0eeec 0%, #eeedeb 100%);
-  color: rgb(19, 14, 14);
-  border-color: #667eea;
-
+  background: #DC143C;               /* Crimson background */
+  color: #ffffff;                    /* White text */
+  border-color: #B22222;             /* Darker crimson border */
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(220, 20, 60, 0.3);
 }
+
+/* -------------------- LOGIN BUTTON -------------------- */
+.login-card .login-btn {
+  width: 100%;
+  padding: 12px;
+  background: #DC143C;               /* Always crimson */
+  color: white;                       /* White text */
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.login-card .login-btn:hover {
+  background: #B22222;               /* Darker crimson on hover */
+  transform: scale(1.03);
+  box-shadow: 0 6px 12px rgba(178, 34, 34, 0.3);
+}
+
 /* ================== AGENCY DROPDOWN ================== */
 .login-card select {
   padding: 12px;
@@ -146,6 +172,7 @@ html, body, #root {
   transition: border-color 0.3s;
   width: 100%;
 }
+
 
 .login-card select:focus {
   outline: none;

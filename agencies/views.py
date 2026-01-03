@@ -79,7 +79,7 @@ class AgencyIssueListView(APIView):
                 "category": i.category,
                 "latitude": i.latitude,
                 "longitude": i.longitude,
-                "photo": i.photo.url if i.photo else None,
+                "photo": request.build_absolute_uri(i.photo.url) if i.photo else None, #views.py line:82,115 
                 "status": i.status,
                 "reporter": i.reporter.username,
                 "created_at": i.created_at,

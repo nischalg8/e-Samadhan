@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from .models import Issue
 from .serializers import IssueSerializer
 from agencies.models import Agency
-from routing.services import rule_based_route
+
 from users.models import User
 
 

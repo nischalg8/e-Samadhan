@@ -37,7 +37,7 @@ export default function AgencyIssues() {
   const handleStatusChange = async (issueId, newStatus, currentStatus) => {
     // Prevent changing back from resolved status
     if (currentStatus === 'resolved' && newStatus !== 'resolved') {
-      alert(t.issue.cannotChangeStatusMessage || "⚠️ Cannot change status of a resolved issue.\n\nOnce an issue is marked as resolved, it cannot be reverted.");
+      alert(t.issue.cannotChangeStatusMessage || " Cannot change status of a resolved issue.\n\nOnce an issue is marked as resolved, it cannot be reverted.");
       return;
     }
 
@@ -77,7 +77,7 @@ export default function AgencyIssues() {
       );
       
       if (newStatus === 'resolved') {
-        alert(t.issue.resolvedSuccessMessage || "✅ Issue marked as RESOLVED!\n\nPoints have been awarded to your agency and the citizen reporter.");
+        alert(t.issue.resolvedSuccessMessage || "Issue marked as RESOLVED!\n\nPoints have been awarded to your agency and the citizen reporter.");
       }
     } catch (err) {
       alert("❌ " + (t.issue.updateError || "Error") + ": " + (err.message || 'Failed to update status'));

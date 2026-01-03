@@ -173,7 +173,7 @@ export default function LoginPage() {
 
           {error && <p className="error-text">{error}</p>}
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className='login-btn'>
             {loading ? t.login.loggingIn : t.login.loginBtn}
           </button>
         </form>
