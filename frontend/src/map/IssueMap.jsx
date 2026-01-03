@@ -22,6 +22,7 @@ export default function IssueMap({
   userLocation,
   selectedLocation,
   onLocationSelect,
+  readOnly = false,
 }) {
   return (
     <MapContainer
@@ -32,19 +33,23 @@ export default function IssueMap({
       <TileLayer url={TILE_URL} />
 
       <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
-        <Popup>Your Location</Popup>
+        <Popup>Issue Location</Popup>
       </Marker>
 
-      <Marker
-        position={[selectedLocation.lat, selectedLocation.lng]}
-        icon={selectorIcon}
-        draggable
-        eventHandlers={{
-          dragend: (e) => onLocationSelect(e.target.getLatLng()),
-        }}
-      />
+      {!readOnly && (
+        <>
+          <Marker
+            position={[selectedLocation.lat, selectedLocation.lng]}
+            icon={selectorIcon}
+            draggable
+            eventHandlers={{
+              dragend: (e) => onLocationSelect(e.target.getLatLng()),
+            }}
+          />
 
-      <MapClickHandler onSelect={onLocationSelect} />
+          <MapClickHandler onSelect={onLocationSelect} />
+        </>
+      )}
     </MapContainer>
   );
 }

@@ -1,17 +1,33 @@
-// src/layout/MainLayout.jsx
 import { useState } from 'react';
+import { useAuth } from '../auth/AuthContext';
 import Header from './Header';
 import FooterNav from './FooterNav';
 import IssueMap from '../map/IssueMap';
 import IssueForm from '../issues/IssueForm';
 import MyIssues from '../issues/MyIssues';
+import AgencyIssues from '../issues/AgencyIssues';
+import MyProfile from '../profile/MyProfile';
 
 export default function MainLayout() {
-  const [tab, setTab] = useState('map');
+  const { user } = useAuth();
+  const [tab, setTab] = useState(user?.role === 'gov_admin' ? 'issues' : 'map');
   const [location, setLocation] = useState({
     lat: 27.7172,
     lng: 85.324,
   });
+
+  // Define tabs based on role
+  const tabs = user?.role === 'gov_admin'
+    ? [
+        { id: 'issues', label: 'Issues' },
+        { id: 'profile', label: 'Profile' },
+      ]
+    : [
+        { id: 'map', label: 'Map' },
+        { id: 'raise', label: 'Raise' },
+        { id: 'issues', label: 'My Issues' },
+        { id: 'profile', label: 'Profile' },
+      ];
 
   return (
     <div className="App">
@@ -20,7 +36,7 @@ export default function MainLayout() {
 
       {/* Main content */}
       <div className="app-content">
-        {tab === 'map' && (
+        {user?.role === 'citizen' && tab === 'map' && (
           <div className="map-container">
             <IssueMap
               userLocation={location}
@@ -30,7 +46,7 @@ export default function MainLayout() {
           </div>
         )}
 
-        {tab === 'raise' && (
+        {user?.role === 'citizen' && tab === 'raise' && (
           <div className="form-wrapper">
             <IssueForm
               location={location}
@@ -41,13 +57,23 @@ export default function MainLayout() {
 
         {tab === 'issues' && (
           <div className="issues-container">
-            <MyIssues />
+            {user?.role === 'citizen' ? <MyIssues /> : <AgencyIssues />}
+          </div>
+        )}
+
+        {tab === 'profile' && (
+          <div className="profile-container">
+            <MyProfile />
           </div>
         )}
       </div>
 
       {/* Footer navigation */}
-      <FooterNav active={tab} setActive={setTab} />
+      <FooterNav
+        active={tab}
+        setActive={setTab}
+        tabs={tabs} // send filtered tabs
+      />
     </div>
   );
 }

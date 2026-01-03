@@ -1,30 +1,38 @@
-// src/auth/AuthContext.jsx
 import { createContext, useContext, useState } from 'react';
-import { citizenLogin, agencyLogin } from '../api/auth.api';
+import { loginAgency as loginAgencyApi, loginCitizen as loginCitizenApi } from '../api/agencies.api';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    if (token && role) return { token, role };
+    return null;
+  });
 
   async function loginCitizen(nid, dob) {
-    const data = await citizenLogin(nid, dob);
-    setUser(data);
+    const data = await loginCitizenApi(nid, dob);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('role', data.role);
+    setUser({ token: data.token, role: data.role });
   }
 
-  async function loginAgency(id, password) {
-    const data = await agencyLogin(id, password);
-    setUser(data);
+  async function loginAgency(agencyName, staffId, username, password) {
+    const data = await loginAgencyApi(agencyName, staffId, username, password);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('role', data.role);
+    setUser({ token: data.token, role: data.role });
   }
 
   function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider
-      value={{ user, loginCitizen, loginAgency, logout }}
-    >
+    <AuthContext.Provider value={{ user, loginCitizen, loginAgency, logout }}>
       {children}
     </AuthContext.Provider>
   );

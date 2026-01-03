@@ -26,7 +26,7 @@ export default function IssueForm({ location, onSuccess }) {
       payload.append('priority', form.priority);
       payload.append('latitude', location.lat);
       payload.append('longitude', location.lng);
-      if (form.image) payload.append('image', form.image);
+      if (form.image) payload.append('photo', form.image);
 
       await createIssue(payload);
 

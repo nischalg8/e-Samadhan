@@ -1,17 +1,13 @@
-
-
-
-//project_dir/frontend/src/issues/MyIssues.jsx
-import { useEffect, useState } from 'react';
-import { listCitizenIssues } from '../api/issues.api';
-import IssueMap from '../map/IssueMap';
+import { useEffect, useState } from "react";
+import { fetchAgencyIssues, updateIssueStatus } from "../api/agencies.api";
+import IssueMap from "../map/IssueMap";
 import { useI18n } from '../i18n/I18nContext';
 
-
-export default function MyIssues() {
+export default function AgencyIssues() {
   const { t } = useI18n();
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const [error, setError] = useState(null);
   const [viewingMap, setViewingMap] = useState(false);
   const [mapLocation, setMapLocation] = useState({ lat: 0, lng: 0 });
@@ -19,24 +15,76 @@ export default function MyIssues() {
   const [imageSrc, setImageSrc] = useState('');
   const [imageZoom, setImageZoom] = useState(1);
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     async function loadIssues() {
       try {
         setLoading(true);
         setError(null);
-        const data = await listCitizenIssues();
+        const data = await fetchAgencyIssues(token);
         setIssues(data);
-        console.log("ISSUE SAMPLE:", data[0]);
       } catch (err) {
-        setError(err.message || 'Failed to load issues');
-        console.error('Error fetching issues:', err);
+        setError(err.message || "Failed to load issues");
       } finally {
         setLoading(false);
       }
     }
 
     loadIssues();
-  }, []);
+  }, [token]);
+
+  const handleStatusChange = async (issueId, newStatus, currentStatus) => {
+    // Prevent changing back from resolved status
+    if (currentStatus === 'resolved' && newStatus !== 'resolved') {
+      alert(t.issue.cannotChangeStatusMessage || "⚠️ Cannot change status of a resolved issue.\n\nOnce an issue is marked as resolved, it cannot be reverted.");
+      return;
+    }
+
+    // Show confirmation for in_progress
+    if (newStatus === 'in_progress') {
+      const confirmed = window.confirm(
+        t.issue.confirmInProgressMessage || 
+        "Are you sure you want to mark this issue as IN PROGRESS?\n\n" +
+        "This indicates that your agency has started working on resolving this issue."
+      );
+      if (!confirmed) return;
+    }
+
+    // Show confirmation for resolved
+    if (newStatus === 'resolved') {
+      const confirmed = window.confirm(
+        t.issue.confirmResolveMessage ||
+        "⚠️ ARE YOU SURE YOU WANT TO MARK THIS ISSUE AS RESOLVED?\n\n" +
+        "This action indicates that:\n" +
+        "• The issue has been completely fixed\n" +
+        "• The project/work is completed\n" +
+        "• Points will be awarded to your agency and the citizen\n" +
+        "• This status CANNOT be changed back\n\n" +
+        "Please confirm that the issue is fully resolved."
+      );
+      if (!confirmed) return;
+    }
+
+    // Perform the update
+    setUpdating(true);
+    try {
+      await updateIssueStatus(issueId, newStatus, token);
+      setIssues(prev =>
+        prev.map(issue =>
+          issue.id === issueId ? { ...issue, status: newStatus } : issue
+        )
+      );
+      
+      if (newStatus === 'resolved') {
+        alert(t.issue.resolvedSuccessMessage || "✅ Issue marked as RESOLVED!\n\nPoints have been awarded to your agency and the citizen reporter.");
+      }
+    } catch (err) {
+      alert("❌ " + (t.issue.updateError || "Error") + ": " + (err.message || 'Failed to update status'));
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const viewOnMap = (lat, lng) => {
     setMapLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
@@ -54,7 +102,7 @@ export default function MyIssues() {
 
   const closeImage = () => {
     setViewingImage(false);
-    setImageZoom(1); // reset zoom
+    setImageZoom(1);
   };
 
   const handleZoom = (e) => {
@@ -63,44 +111,15 @@ export default function MyIssues() {
     setImageZoom(prev => Math.max(0.5, Math.min(3, prev + delta)));
   };
 
-  if (loading) {
-    return (
-      <div className="issues-container">
-        <p>{t.loading}</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="issues-container">
-        <div className="error-message">
-          ⚠️ {error}
-        </div>
-        <button onClick={() => window.location.reload()}>
-          Retry
-        </button>
-      </div>
-    );
-  }
-
-  if (!issues.length) {
-    return (
-      <div className="issues-container">
-        <div className="no-issues">
-          <h3>{t.general.noIssues}</h3>
-          <p>You haven't reported any issues yet.</p>
-          <p>Go to the "Raise" tab to report an issue.</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <p>{t.loading}</p>;
+  if (error) return <p style={{ color: "red" }}>⚠️ {error}</p>;
+  if (!issues.length) return <p>{t.issue.noIssuesAssigned}</p>;
 
   return (
     <div className="issues-container">
-      <h2>{t.nav.issues} ({issues.length})</h2>
+      <h2>{t.issue.assignedIssues} ({issues.length})</h2>
       <div className="issues-list">
-        {issues.map((issue) => (
+        {issues.map(issue => (
           <div key={issue.id} className="issue-card">
             <div className="issue-header">
               <span className={`priority-badge ${issue.priority}`}>
@@ -116,8 +135,9 @@ export default function MyIssues() {
 
             <div className="issue-meta">
               <p>📍 <button className="location-link" onClick={() => viewOnMap(issue.latitude, issue.longitude)}>{t.issue.location}: {issue.latitude}, {issue.longitude}</button></p>
+              <p>{t.issue.reporter}: {issue.reporter}</p>
               {issue.created_at && (
-                <p> {t.issue.reported}: {new Date(issue.created_at).toLocaleDateString()}</p>
+                <p>{t.issue.reported}: {new Date(issue.created_at).toLocaleDateString()}</p>
               )}
             </div>
 
@@ -130,6 +150,24 @@ export default function MyIssues() {
               />
             )}
 
+            <div className="update-status">
+              <label>{t.issue.updateStatus}:</label>
+              <select
+                className="status-select"
+                value={issue.status}
+                disabled={updating || issue.status === 'resolved'}
+                onChange={e => handleStatusChange(issue.id, e.target.value, issue.status)}
+              >
+                <option value="submitted">{t.issue.submitted}</option>
+                <option value="in_progress">{t.issue.inProgress}</option>
+                <option value="resolved">{t.issue.resolved}</option>
+              </select>
+              {issue.status === 'resolved' && (
+                <p style={{ fontSize: '11px', color: '#27ae60', marginTop: '5px', fontWeight: '600' }}>
+                 {t.issue.cannotChangeStatus}
+                </p>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -141,7 +179,7 @@ export default function MyIssues() {
             <IssueMap
               userLocation={mapLocation}
               selectedLocation={mapLocation}
-              onLocationSelect={() => {}} // No-op for read-only
+              onLocationSelect={() => {}}
               readOnly={true}
             />
           </div>
