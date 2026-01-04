@@ -6,7 +6,7 @@ export default function FooterNav({ active, setActive }) {
   const { t } = useI18n();
   const { user } = useAuth();
   const isGovAdmin = user?.role === 'gov_admin';
-  
+
   return (
     <footer className="footer-nav">
       {!isGovAdmin && (
@@ -31,6 +31,13 @@ export default function FooterNav({ active, setActive }) {
       >
         {t.nav.issues}
       </button>
+       {!isGovAdmin && (<button
+        className={`nav-btn ${active === 'forum' ? 'active' : ''}`}
+        onClick={() => setActive('forum')}
+      >
+        {t.nav.forum}
+      </button>)}
+
       <button
         className={`nav-btn ${active === 'profile' ? 'active' : ''}`}
         onClick={() => setActive('profile')}

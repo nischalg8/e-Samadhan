@@ -7,6 +7,8 @@ import IssueForm from '../issues/IssueForm';
 import MyIssues from '../issues/MyIssues';
 import AgencyIssues from '../issues/AgencyIssues';
 import MyProfile from '../profile/MyProfile';
+import ForumPage from '../forum/ForumPage';
+
 
 export default function MainLayout() {
   const { user } = useAuth();
@@ -19,15 +21,16 @@ export default function MainLayout() {
   // Define tabs based on role
   const tabs = user?.role === 'gov_admin'
     ? [
-        { id: 'issues', label: 'Issues' },
-        { id: 'profile', label: 'Profile' },
-      ]
+      { id: 'issues', label: 'Issues' },
+      { id: 'profile', label: 'Profile' },
+    ]
     : [
-        { id: 'map', label: 'Map' },
-        { id: 'raise', label: 'Raise' },
-        { id: 'issues', label: 'My Issues' },
-        { id: 'profile', label: 'Profile' },
-      ];
+      { id: 'map', label: 'Map' },
+      { id: 'raise', label: 'Raise' },
+      { id: 'issues', label: 'My Issues' },
+      { id: 'profile', label: 'Profile' },
+      { id: 'forum', label: 'Forum' },
+    ];
 
   return (
     <div className="App">
@@ -60,6 +63,12 @@ export default function MainLayout() {
             {user?.role === 'citizen' ? <MyIssues /> : <AgencyIssues />}
           </div>
         )}
+        {tab === 'forum' && (
+          <div className="forum-container">
+            <ForumPage />
+          </div>
+        )}
+
 
         {tab === 'profile' && (
           <div className="profile-container">

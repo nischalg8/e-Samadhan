@@ -16,6 +16,16 @@ export const translations = {
       loggingIn: 'Logging in...',
     },
 
+    forum: {
+      title: "Forum",
+      placeholder: "Forum feature is yet to be available",
+         upvote: 'Upvote',
+      comment: 'Comment',
+    },
+    chat: {
+      "title": "Chat with Agency",
+      "placeholder": "Chat feature is yet to be implemented"
+    },
     issue: {
       raise: 'Raise an Issue',
       description: 'Description',
@@ -60,6 +70,8 @@ export const translations = {
       location: 'Location',
     },
 
+
+
     map: {
       yourLocation: 'Your Current Location',
       instruction: 'Go to map to reselect the location if needed.',
@@ -70,6 +82,7 @@ export const translations = {
       raise: 'Raise',
       issues: 'Issues',
       profile: 'Profile',
+      forum: 'Forum',
     },
 
     profile: {
@@ -108,6 +121,16 @@ export const translations = {
       loggingIn: 'लग इन हुँदैछ...',
     },
 
+    forum: {
+      title: "फोरम",
+      placeholder: "फोरम सुविधा अहिले उपलब्ध छैन",
+        upvote: 'अपभोट',
+      comment: 'टिप्पणी',
+    },
+    chat: {
+      title: "निकायसँग च्याट",
+      placeholder: "च्याट सुविधा अझै लागू गरिएको छैन"
+    },
     issue: {
       raise: 'समस्या रिपोर्ट गर्नुहोस्',
       description: 'विवरण',
@@ -141,7 +164,7 @@ export const translations = {
         medium: 'मध्यम प्राथमिकता',
         high: 'उच्च प्राथमिकता',
       },
-      assignedIssues: 'सौंपिएका समस्याहरू',
+      assignedIssues: 'समस्याहरू',
       status: 'स्थिति',
       reporter: 'रिपोर्टर',
       reported: 'रिपोर्ट गरिएको',
@@ -163,6 +186,7 @@ export const translations = {
       raise: 'रिपोर्ट',
       issues: 'समस्याहरू',
       profile: 'प्रोफाइल',
+       forum: 'फोरम',
     },
 
     profile: {
@@ -185,4 +209,3 @@ export const translations = {
   },
 
 }
-

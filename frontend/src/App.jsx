@@ -6,7 +6,7 @@ import ChatBubble from './chat/ChatBubble';
 
 // This component decides which view to show based on login
 function Router() {
-  const { user } = useAuth(); // ✅ user is defined here
+  const { user } = useAuth(); // user is defined here
   return user ? <MainLayout /> : <LoginPage />;
 }
 
@@ -25,7 +25,7 @@ export default function App() {
     <I18nProvider>
       <AuthProvider>
         {/* <Router />  */}
-         <AppContent /> {/* ✅ use Router here */}
+         <AppContent /> {/*  use Router here */}
       </AuthProvider>
     </I18nProvider>
   );

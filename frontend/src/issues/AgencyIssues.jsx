@@ -189,7 +189,26 @@ export default function AgencyIssues() {
       {viewingImage && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={closeImage}>
           <div style={{ position: 'relative', width: '600px', height: '400px', background: 'white', borderRadius: '10px', padding: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }} onClick={(e) => e.stopPropagation()}>
-            <button onClick={closeImage} style={{ position: 'absolute', top: 5, right: 5, background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '25px', height: '25px', cursor: 'pointer', fontSize: '14px', lineHeight: '1' }}>×</button>
+           <button
+  onClick={closeImage}
+  style={{
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    background: 'red',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50%',
+    width: '25px',
+    height: '25px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    lineHeight: '1',
+    zIndex: 10, // Add this
+  }}
+>
+  ×
+</button>
             <img src={imageSrc} alt="Issue" style={{ width: '100%', height: '100%', objectFit: 'contain', transform: `scale(${imageZoom})`, transformOrigin: 'center', transition: 'transform 0.1s' }} onWheel={handleZoom} />
           </div>
         </div>
